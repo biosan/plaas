@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <title>Plaas</title>
+
+    <script type="text/JavaScript">
+        function plotIt(){
+            var title = document.getElementById("plot_title").value;
+            var data = document.getElementById("plot_data").value;
+
+            // Clean up and validate DATA
+            if (data.length > 0 && data.length < 200) {
+                data = data.trim().split(',');
+                data.map(s => s.trim());
+                valid = data.every(n => !isNaN(n));
+                if (valid == false) {
+                    //display_message.innerHTML = "Invalid data!";
+                    console.log("Error data invalid");
+                    return 0;
+                }
+            } else {
+                //display_message.innerHTML = "Invalid data!"; 
+                console.log("Error data len");
+                return 0;
+            }
+
+            // Clean up and validate TITLE
+            if (title.length > 0 && title.length < 100) {
+                title = title.trim(); 
+            } else {
+                //display_message.innerHTML = "Invalid data!";
+                console.log("Error title len");
+                return 0;
+            }
+
+            // Build URL query parameters string
+            query_str = '?' + 'title=' + title + '&' + 'data=' + data.toString();
+
+            // Backend API response handler
+            function response(e) {
+                var urlCreator = window.URL || window.webkitURL;
+                var plotImageUrl = urlCreator.createObjectURL(this.response);
+                document.getElementById("plot_image").src = plotImageUrl;
+                document.getElementById("plot_image").style.display="block";
+            }
+            // Send GET request to backend API
+            xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "/plot" + query_str);
+            xhttp.responseType = "blob";
+            xhttp.onload = response;
+            xhttp.send();
+            console.log('Request sent');
+        }
+
+        function clearAll() {
+            document.getElementById("plot_title").value = "";
+            document.getElementById("plot_data").value = "";
+            document.getElementById("plot_image").style.display="none";
+            console.log("cleared");
+        }
+    </script>
+
+</head>
+
+
+<body>
+    <section class="section">
+        <div class="container is-widescreen">
+            <h1 class="title has-text-centered is-large">
+                Welcome to Plaas.
+            </h1>
+            <p class="subtitle has-text-centered has-text-grey">
+                Plaas is a simple webapp and API to build basic charts in XKCD-style.
+            </p>
+
+            <div class="columns is-mobile">
+                <div class="column is-one-third is-offset-one-third">
+                    <form class="has-text-centered" onReset="clearImg()">
+                        <div class="field">
+                            <label class="label">Title</label>
+                            <div class="control">
+                                <input class="input" type="text" id="plot_title" placeholder="Plot title...">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Data</label>
+                            <div class="control">
+                                <input class="input" type="text" id="plot_data" placeholder="Your data points, comma separated. e.g. 1,2,3.14,4">
+                            </div>
+                        </div>
+                        <div class="field is-grouped is-grouped-centered">
+                            <p class="control">
+                                <button type="button" class="button is-primary" onclick="plotIt()">
+                                    Plot!
+                                </button>
+                            </p>
+                            <p class="control">
+                                <button type="button" class="button is-light" onclick="clearAll()">
+                                    Cancel
+                                </button>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column"></div>
+                <div class="column is-two-thirds">
+                    <figure class="image is-4by3">
+                        <img id="plot_image" style="display: none;"/>
+                    </figure>
+                </div>
+                <div class="column"></div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html> 
