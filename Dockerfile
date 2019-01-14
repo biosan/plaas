@@ -6,8 +6,8 @@ COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY ./plaas /plaas
-COPY index.html /index.html
+COPY plaas ./plaas
+COPY index.html .
 
 EXPOSE 80
 
