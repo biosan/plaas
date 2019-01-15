@@ -9,6 +9,7 @@ RUN pip install -r requirements.txt
 
 # Add source code
 COPY plaas ./plaas
+COPY logging.conf .
 COPY index.html .
 # Add fonts (Humor-Sans) and update fonts cache
 # then delete fontconfig (isn't necessary anymore) and clean cache
