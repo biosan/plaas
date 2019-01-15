@@ -5,10 +5,10 @@ services:
   - docker
 
 install:
-  - docker build -e CODECOV_TOKEN -t plaas_testing -f Dockerfile.testing .
+  - docker build -t plaas_testing -f Dockerfile.testing .
 
 script:
   - docker run plaas_testing
 
 after_success:
-  - docker run plaas_testing 'codecov'
+  - docker run -e CODECOV_TOKEN plaas_testing 'codecov'
