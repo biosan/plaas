@@ -17,8 +17,23 @@ The frontend is a simple HTML plus some bits of JS, all styled thanks to Bulma.
 pipenv run pytest tests
 ```
 
+Or using Docker:
+
+```
+docker build -t plaas-testing -f Dockerfile.testing .
+docker run plaas-testing
+```
+
+
 ## How to run
 
 ```
 pipenv run gunircorn plaas.app
+```
+
+Or using Docker:
+
+```
+docker build -t plaas .
+docker run plaas
 ```
