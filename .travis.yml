@@ -1,10 +1,11 @@
-language: python
 sudo: required
 dist: xenial
-python: "3.7"
+
+services:
+  - docker
+
 install:
-  - 'pip install pipenv'
-  - 'pipenv install --dev'
-script: 'pipenv run pytest tests'
-after_success:
-  - 'codecov'
+  - docker build -t plaas_testing .
+
+script:
+  - docker run --no-deps --rm plaas_testing py.test
