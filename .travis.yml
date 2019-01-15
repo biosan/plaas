@@ -8,4 +8,4 @@ install:
   - docker build -t plaas_testing .
 
 script:
-  - docker run plaas_testing py.test
+  - docker run plaas_testing
