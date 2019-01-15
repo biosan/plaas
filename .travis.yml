@@ -5,7 +5,7 @@ services:
   - docker
 
 install:
-  - docker build -t plaas_testing .
+  - docker build -t plaas_testing -f Dockerfile.testing .
 
 script:
   - docker run plaas_testing
