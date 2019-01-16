@@ -2,18 +2,9 @@ FROM czentye/matplotlib-minimal:3.0.2
 
 WORKDIR /app
 
-# Add requirements file
-COPY requirements.txt .
-# Install requirements
-RUN pip install -r requirements.txt
+# Install Git (it's a codecov dependency)
+RUN apk --update add git
 
-# Add source code
-COPY plaas ./plaas
-COPY logging.conf .
-COPY index.html .
-
-# Add test suite
-COPY tests ./tests
 # Add fonts (Humor-Sans) and update fonts cache
 # then delete fontconfig (isn't necessary anymore) and clean cache
 COPY fonts /root/.fonts
@@ -21,6 +12,14 @@ RUN apk --update add fontconfig && \
     fc-cache -fv && \
     apk del --purge fontconfig && \
     rm -vrf /var/cache/apk/*
+
+# Add requirements file
+COPY requirements.txt .
+# Install requirements
+RUN pip install -r requirements.txt
+
+# Add source code
+COPY . .
 
 # Run test suite
 CMD ["pytest", "tests"]
