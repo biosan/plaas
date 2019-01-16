@@ -10,5 +10,15 @@ install:
 script:
   - docker run plaas_testing
 
+# Thank you webyneter
+# See https://gist.github.com/webyneter/f9a957c7448583b0222e69430db14f68
+# 
+# `$(bash <(curl -s https://codecov.io/env))`
+# Download and execute a script from Codecov that automatically import env variables for the right CI provider
+# script output example: "-e CODECOV_GIT_COMMIT -e CODECOV_GIT_PULL ..."
+#
+# `ash -c 'pytest --cov=./ && codecov'`
+# Run pytest coverage testing and send the report to Codecov.io
+#
 after_success:
-  - docker run -e CODECOV_TOKEN plaas_testing 'codecov'
+  - docker run $(bash <(curl -s https://codecov.io/env)) plaas_testing ash -c 'pytest --cov=./ && codecov'
