@@ -1,5 +1,8 @@
 # Plaas
 
+[![Build Status](https://travis-ci.org/biosan/plaas.svg?branch=master)](https://travis-ci.org/biosan/plaas) [![codecov](https://codecov.io/gh/biosan/plaas/branch/master/graph/badge.svg)](https://codecov.io/gh/biosan/plaas)
+
+
 **Pl**ots **a**s **a** **s**ervice (XKCD style)
 
 ## How it works
