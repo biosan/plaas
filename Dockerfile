@@ -2,6 +2,14 @@ FROM czentye/matplotlib-minimal:3.0.2
 
 WORKDIR /app
 
+# Add fonts (Humor-Sans) and update fonts cache
+# then delete fontconfig (isn't necessary anymore) and clean cache
+COPY fonts /root/.fonts
+RUN apk --update add fontconfig && \
+    fc-cache -fv && \
+    apk del --purge fontconfig && \
+    rm -vrf /var/cache/apk/*
+
 # Add requirements file
 COPY requirements.txt .
 # Install requirements
@@ -11,13 +19,6 @@ RUN pip install -r requirements.txt
 COPY plaas ./plaas
 COPY logging.conf .
 COPY index.html .
-# Add fonts (Humor-Sans) and update fonts cache
-# then delete fontconfig (isn't necessary anymore) and clean cache
-COPY fonts /root/.fonts
-RUN apk --update add fontconfig && \
-    fc-cache -fv && \
-    apk del --purge fontconfig && \
-    rm -vrf /var/cache/apk/*
 
 # Expose port and run the app
 EXPOSE 80
