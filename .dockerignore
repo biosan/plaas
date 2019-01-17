@@ -1,0 +1,9 @@
+*.md
+*.gif
+*.mov
+*.jpg
+.vscode
+!tests
+!plaas
+!fonts
+!.git
