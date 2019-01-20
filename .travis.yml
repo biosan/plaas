@@ -5,7 +5,7 @@ services:
 install:
 - docker build -t plaas_testing -f Dockerfile.testing .
 script:
-- docker run plaas_testin
+- docker run plaas_testing
 
 # Thank you webyneter
 # See https://gist.github.com/webyneter/f9a957c7448583b0222e69430db14f68
