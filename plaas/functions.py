@@ -5,7 +5,9 @@ matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 
+from .instruments import plot_lat
 
+@plot_lat.time()  # Measure function execution time
 def plot_it(title, data, streamable=False):
     """
     Return a simple XKCD-style line plot.

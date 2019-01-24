@@ -21,5 +21,10 @@ RUN pip install -r requirements.txt
 # Add source code
 COPY . .
 
+# The prometheus_multiproc_dir environment variable must be set to a directory that the client library can use for metrics.
+# See: https://github.com/prometheus/client_python
+RUN mkdir ./multiproc-tmp
+ENV prometheus_multiproc_dir=./multiproc-tmp
+
 # Run test suite
 CMD ["pytest", "tests"]

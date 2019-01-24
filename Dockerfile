@@ -19,7 +19,13 @@ RUN pip install -r requirements.txt
 COPY plaas ./plaas
 COPY logging.conf .
 COPY index.html .
+COPY gunicorn.py .
+
+# The prometheus_multiproc_dir environment variable must be set to a directory that the client library can use for metrics.
+# See: https://github.com/prometheus/client_python
+RUN mkdir ./multiproc-tmp
+ENV prometheus_multiproc_dir=./multiproc-tmp
 
 # Expose port and run the app
-EXPOSE 80
-CMD ["gunicorn", "-b 0.0.0.0:80", "plaas.app"]
+EXPOSE ${PORT:-80}
+CMD gunicorn -b 0.0.0.0:${PORT:-80} -c gunicorn.py plaas.app

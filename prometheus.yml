@@ -1,0 +1,17 @@
+# Global config
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+  external_labels:
+      monitor: 'plaas'
+
+scrape_configs:
+  # Monitor Prometheus itself
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+         - targets: ['localhost:9090']
+  # Monitor Plaas app
+  - job_name: 'plaas'
+    static_configs:
+      - targets: ['plaas:8080']
