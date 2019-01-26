@@ -1,11 +1,9 @@
 sudo: required
 dist: xenial
 services:
-- docker
-install:
-- docker build -t plaas_testing -f Dockerfile.testing .
+  - docker
 script:
-- docker run plaas_testing
+  - make test
 
 # Thank you webyneter
 # See https://gist.github.com/webyneter/f9a957c7448583b0222e69430db14f68
@@ -20,11 +18,14 @@ script:
 after_success:
 - docker run $(bash <(curl -s https://codecov.io/env)) plaas_testing ash -c 'pytest
   --cov=./ && codecov'
+
 deploy:
   - provider: heroku
     api_key:
       secure: kHc+qPxGvdHbPFNDnJvoHnpDv6pOKExOKSZysETKVr/2bh92v/1FldUSabPpp67fnfonqThv6emv2bcznh9kq1p4pTSQFJuAf+2a02rz6Lrpezl7agi6Q0A+ObBK1o7lt2l/2USdeZCpVilRp3vY6vPqDEOP4zt+KkWZ2CP+5R2aLkVPQz+WMcNHrd1i7pAPSa022WSsaIHEBG7qFU9JOOsEFTmkpc52dfqnQd46l06yF3P5fLnb/upHxhD4KZoxUKs2ijIFUrSfs/T8OewudS/WuQx/cLZ+Z2mvVEP4FdGtrAj1k69xP9TM2UH+DrWlCgu5TZzXp7S/NqqbuIaS3VQCZrINNhgMJl/UQQ0XIXIjsSx2rlJu2/JYCQRP6wY01Hd41xuI54D+k2nHmv1oekdlXk8jm1YHi1C+0l6nm6FTHBeSsKpMucinHx+LBRB3rAPJQrytwE/kLx7rKdUuIVscuVdDY9YfHUR5SQi/Mf331JsNgZU7pbV6Em4pZUbiVI7RZXIUW6H2tw5XKdF2/s1UcKMqqAWJuT8SpxR5B5rG6ih6bIHV5f72Ef+LwyQyKn81rGuKvf5aDzW5tfSKwTLSoMFewJ7FQ3Pc2I9rjGNq1DuFMOgei/yUQB3GKwslWxYH29i9fngh3SrSg0YvYOzZbaxeFItpb3Fb6bUhKFE=
   - provider: script
-    script: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin && docker push biosan/plaas
+    script:
+      - echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
+      - make build push
     on:
       branch: master
