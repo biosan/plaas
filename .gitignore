@@ -1,2 +1,5 @@
 .vscode
 .pytest_cache
+.terraform
+.coverage
+.elasticbeanstalk

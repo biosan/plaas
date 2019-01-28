@@ -3,7 +3,11 @@
 *.mov
 *.jpg
 .vscode
+.elasticbeanstalk
+.terraform
+.pytest_cache
 !tests
 !plaas
 !fonts
 !.git
+!deployment
