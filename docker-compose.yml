@@ -1,0 +1,86 @@
+#
+# This docker-compose file is used only for local testing.
+# Includes more than one monitoring solution: Datadog, Prometheus and Grafana.
+# I use it mostly for testing and comparing monitoring and logging solutions.
+#
+
+version: '3.1'
+
+# Persistent volumes for Prometheus and Grafana
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+
+# Front-end and Back-end networks
+networks:
+  front:
+  back:
+
+
+services:
+
+  plaas:
+    #image: biosan/plaas:latest  # TODO: Use a DockerHub image
+    build: .
+    environment:
+      - PORT=8080
+    ports:
+      - 8080:8080
+    networks:
+      - front
+      - back
+    restart: always
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "gunicorn", "service": "plaas"}]'
+
+  prometheus:
+    image: prom/prometheus:v2.1.0
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9090:9090
+    depends_on:
+      - plaas
+    networks:
+      - back
+    restart: always
+
+
+  grafana:
+    image: grafana/grafana
+    user: "104"
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      #- ./grafana/provisioning/:/etc/grafana/provisioning/
+    #env_file:
+    #  - ./grafana/config.monitoring
+    networks:
+      - back
+      - front
+    restart: always
+
+  datadog:
+    image: datadog/agent:latest
+    networks:
+      - back
+      - front
+    environment:
+      - DD_API_KEY=f63170115d9f895af36a9ccbb225e0ce
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      - DD_AC_EXCLUDE="name:datadog-agent"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+      #- /opt/datadog-agent/run:/opt/datadog-agent/run:rw
