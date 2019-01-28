@@ -36,7 +36,7 @@ services:
   prometheus:
     image: prom/prometheus:v2.1.0
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -80,6 +80,7 @@ services:
       - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
       - DD_AC_EXCLUDE="name:datadog-agent"
     volumes:
+      - ./config/datadog_prometheus_config.yml:/etc/datadog-agent/conf.d/prometheus.d/conf.yaml
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc/:/host/proc/:ro
       - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
