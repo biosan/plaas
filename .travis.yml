@@ -20,9 +20,10 @@ after_success:
   --cov=./ && codecov'
 
 deploy:
-  - provider: script
-    script:
-      - echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
-      - make build push
-    on:
-      branch: master
+  skip_cleanup: true
+  provider: script
+  script:
+    - echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
+    - make build push
+  on:
+    branch: master
