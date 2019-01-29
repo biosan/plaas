@@ -1,0 +1,97 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+       "name": "prometheus",
+       "host": {
+         "sourcePath": "/var/app/current/datadog_prometheus_config.yml"
+        }
+    },
+    {
+       "name": "docker_sock",
+       "host": {
+            "sourcePath": "/var/run/docker.sock"
+      }
+    },
+    {
+     "name": "proc",
+     "host": {
+        "sourcePath": "/proc/"
+      }
+    },
+    {
+      "name": "cgroup",
+      "host": {
+        "sourcePath": "/cgroup/"
+      }
+    }
+  ],
+  "containerDefinitions": [
+    {
+      "name": "plaas",
+      "image": "biosan/plaas:latest",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 8080
+        }
+      ],
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "8080"
+        },
+        {
+          "name": "LOG_LEVEL",
+          "value": "DEBUG"
+        }
+      ]
+    },
+    {
+      "name": "dd-agent",
+      "image": "datadog/agent:latest",
+      "links": [
+        "plaas"
+      ],
+      "environment": [
+        {
+          "name": "DD_LOGS_ENABLED",
+          "value": "true"
+        },
+        {
+          "name": "DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL",
+          "value": "true"
+        },
+        {
+          "name": "DD_AC_EXCLUDE",
+          "value": "name:datadog"
+        }
+      ],
+      "memory": 128,
+      "mountPoints": [
+        {
+          "sourceVolume": "prometheus",
+          "containerPath": "/etc/datadog-agent/conf.d/prometheus.d/conf.yaml",
+          "readOnly": false
+        },
+        {
+          "sourceVolume": "docker_sock",
+          "containerPath": "/var/run/docker.sock",
+          "readOnly": false
+        },
+        {
+          "sourceVolume": "proc",
+          "containerPath": "/host/proc",
+          "readOnly": true
+        },
+        {
+          "sourceVolume": "cgroup",
+          "containerPath": "/host/sys/fs/cgroup",
+          "readOnly": true
+        }
+      ]
+    }
+  ]
+}
