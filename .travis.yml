@@ -16,8 +16,7 @@ script:
 # Run pytest coverage testing and send the report to Codecov.io
 #
 after_success:
-- docker run $(bash <(curl -s https://codecov.io/env)) plaas_testing ash -c 'pytest
-  --cov=./ && codecov'
+- docker run $(bash <(curl -s https://codecov.io/env)) plaas-testing ash -c 'pytest --cov=./ && codecov'
 
 deploy:
   skip_cleanup: true
