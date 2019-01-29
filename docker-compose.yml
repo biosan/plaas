@@ -75,7 +75,7 @@ services:
       - back
       - front
     environment:
-      - DD_API_KEY=f63170115d9f895af36a9ccbb225e0ce
+      - DD_API_KEY
       - DD_LOGS_ENABLED=true
       - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
       - DD_AC_EXCLUDE="name:datadog-agent"
