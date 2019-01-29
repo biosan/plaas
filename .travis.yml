@@ -16,13 +16,11 @@ script:
 # Run pytest coverage testing and send the report to Codecov.io
 #
 after_success:
-- docker run $(bash <(curl -s https://codecov.io/env)) plaas-testing ash -c 'pytest --cov=./ && codecov'
-
-deploy:
-  skip_cleanup: true
-  provider: script
-  script:
-    - echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
-    - make build push
+  # Send code coverage report
+  - docker run $(bash <(curl -s https://codecov.io/env)) plaas-testing ash -c 'pytest --cov=./ && codecov'
+  # Loging to DockerHub
+  - echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
+  # Build and push docker image to DockerHub
+  - make build push
   on:
     branch: master
